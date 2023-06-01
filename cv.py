@@ -1,5 +1,4 @@
 import cv2
-import serial
 import datetime
 import time
 
@@ -19,16 +18,17 @@ lastFound = datetime.datetime.now()
 lastLost = datetime.datetime.now()
 shoot = 0
 video_capture = cv2.VideoCapture(0)
-serl = serial.Serial('/dev/ttyUSB0')
+# serl = serial.Serial('/dev/ttyUSB0')
 lastdx = 0
 lastdy = 0
 
 
 def writeSerial(x, y, shoot):
-    string = "{}-{},{}".format(
-        int(x), int(y), int(shoot)
-    )
-    serl.write(str.encode(string))
+    # string = "{}-{},{}".format(
+    #     int(x), int(y), int(shoot)
+    # )
+    # serl.write(str.encode(string))
+    pass
 
 
 while True:
