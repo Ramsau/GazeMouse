@@ -4,6 +4,7 @@ import datetime
 import time
 import pyautogui
 from gaze_tracking import GazeTracking
+import socket
 
 class Direction(Enum):
     HORIZONTAL = 0
@@ -23,6 +24,17 @@ faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 gaze = GazeTracking()
 video_capture = cv2.VideoCapture(0)
 cv2.namedWindow('custom_win', cv2.WINDOW_FREERATIO)
+
+
+TCP_IP = '127.0.0.1'
+TCP_PORT = 5005
+BUFFER_SIZE = 1024
+MESSAGE = "Hello, World!"
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
+counter = 0
+
 
 
 while True:
@@ -59,6 +71,16 @@ while True:
     elif tracking == Direction.VERTICAL:
         absolut_Y += relative_shift
     pyautogui.moveTo(absolut_X, absolut_Y)
+    
+    counter += 1
+    if counter % 50 == 0:
+        s.send(b"Request")
+        data = s.recv(BUFFER_SIZE)
+        if data == b'Horizontal':
+            tracking = Direction.HORIZONTAL
+        elif data == b'Vertical':
+            tracking = Direction.VERTICAL
+        print ("\n#####################\nreceived data:" +str(data) + "\n#######################" )
 
     try: cv2.imshow('Video', frame) 
     except: pass
@@ -68,3 +90,4 @@ while True:
 
 video_capture.release()
 cv2.destroyAllWindows()
+s.close()
